@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+     <style>
+      a#outurl:visited {color:purple}
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row min-vh-100">
+        <aside class="col-12 col-md-2 p-0 bg-light">
+            <nav class="navbar navbar-expand navbar-light bg-light flex-md-column flex-row align-items-start py-2">
+                <div class="collapse navbar-collapse">
+                    <ul class="flex-md-column flex-row navbar-nav w-100 justify-content-start flex-wrap">
+                        <li class="nav-item">
+                            <a class="nav-link pl-0 text-nowrap {% if (request.args.get('keyword') == None and  request.endpoint == 'index') %} active {% endif %}" href="/">&nbsp;&nbsp;<i></i> <span
+                                    class="font-weight-bold">All</span></a>
+                        </li>
+                        {% for keyword in get_keywords() %}
+                        <li class="nav-item">
+                            <a class="nav-link pl-0 {% if request.args.get('keyword') == keyword %} active {% endif %}" href="/?keyword={{ keyword }} ">&nbsp;&nbsp;&nbsp;<i>{{ keyword }}</i></a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="flex-md-column flex-row navbar-nav w-100 justify-content-between">
+                        <li class="nav-item">
+                            <a class="nav-link pl-0 text-nowrap {% if request.endpoint == 'archive_list' %} active {% endif %}" href="/archive_list">&nbsp;&nbsp;<i></i> <span
+                                    class="font-weight-bold">Archive</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+        {% block content %}
+        {% endblock %}
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/jquery-3.3.1.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+<script src="{{ url_for('static', filename='js/feather.js') }}"></script>
+<script src="{{ url_for('static', filename='js/layer.js') }}"></script>
+<script>
+{% block script %}
+{% endblock %}
+</script>
+</body>
+</html>

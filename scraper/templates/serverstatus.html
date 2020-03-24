@@ -1,0 +1,47 @@
+{% extends 'configbase.html' %}
+
+{% block title %}
+Server Status
+{% endblock %}
+
+
+{% block content %}
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <div class="table-responsive">
+        <table class="table table-striped table-sm table-bordered text-nowrap table-hover">
+            <thead>
+            <tr>
+                <th>Spider IP</th>
+                <th>Keyword</th>
+                <th>Spider Status</th>
+                <th>Last Full Scan Complte Time</th>
+
+            </tr>
+            </thead>
+            <tbody id="serverstatus">
+            {% for k, v in config_dict.items() %}
+            <tr>
+                <td>{{ k }}</td>
+                <td>{{ v['keyword'] }}</td>
+                <td>{{ v['spider_status'] }}</td>
+                <td>{{ v['last_full_scan_time'] }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+{% endblock %}
+
+{% block script %}
+$(document).ready(function() {
+    function update_trackdata() {
+        $.getJSON("/getserverstatus", function(data) {
+            $("#serverstatus").html(data.html);
+        });
+        return false;
+    }
+    update_trackdata();
+    var interval = setInterval(update_trackdata, 10000);
+});
+{% endblock %}

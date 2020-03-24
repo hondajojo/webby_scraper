@@ -1,0 +1,87 @@
+{% extends 'base2.html' %}
+
+{% block title %}
+Archive List Page
+{% endblock %}
+
+
+{% block content %}
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <h3 style="float:right;">
+        <a href="{{ url_for('configlist')}}" style="color: #556">
+            Settings
+        </a>
+    </h3>
+    <div class="table-responsive">
+        <table class="table table-striped table-sm table-bordered">
+            <thead>
+            <tr>
+                <th>Keyword</th>
+                <th>Source</th>
+                <th>Title</th>
+                <th>Location</th>
+                <th>Comments</th>
+                <th>Scrape time</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="Tracksinner">
+            {% for each in session_list %}
+            <tr>
+                <td>{{ each['keyword'] }}</td>
+                <td>{{ each['source'] }}</td>
+                <td><a id="outurl" href="{{ each['url'] }}" target="_blank">{{ each['title'] }}</a></td>
+                <td>{{ each['location'] }}</td>
+                <td><input id="comments" name="comments" size="30" type="text" data-id="{{ each['id'] }}" value="{% if each['comments'] %}{{ each['comments'] }}{% endif %}"></td>
+                <td>{{ each['created'] }}</td>
+                <td>
+                    <a href="#" id="delete" data-id="{{ each['id'] }}">delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</main>
+{% endblock %}
+
+
+{% block script %}
+
+$(function() {
+    $('a#delete').click(function() {
+      var self = $(this);
+      $.getJSON($SCRIPT_ROOT + '/delete_archive', {
+        id: self.attr("data-id"),
+      }, function(data) {
+        if(data.code==200){
+            self.parents('tr').fadeOut('slow');
+        }
+      });
+      return false;
+    });
+  });
+
+$(function() {
+    $.postJSON = function(url, data, func)
+        {
+            $.post(url, data, func, 'json');
+        }
+
+    $('input[name="comments"]').blur(function() {
+    var self = $(this);
+      $.postJSON($SCRIPT_ROOT + '/addcomment', {
+        id: self.attr("data-id"),
+        comment: self.val(),
+      }, function(data) {
+        console.log(self.attr("data-id"));
+        console.log(self.val());
+        if(data.code==200){
+            layer.msg('save comment success');
+        }
+      });
+      return false;
+    });
+  });
+{% endblock %}

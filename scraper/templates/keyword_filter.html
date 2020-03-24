@@ -1,0 +1,25 @@
+{% extends 'configbase.html' %}
+
+{% block title %}
+Add Config
+{% endblock %}
+
+
+{% block content %}
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning" role="alert">
+        {{ message }}
+    </div>
+    {% endfor %}
+
+    <form action="" method="POST">
+        <br>
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.keywords(class="form-control", placeholder="keywords") }}
+        </div>
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+</main>
+{% endblock %}
